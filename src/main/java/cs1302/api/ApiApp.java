@@ -17,6 +17,7 @@ public class ApiApp extends Application {
     Scene scene;
     VBox root;
 
+
     /**
      * Constructs an {@code ApiApp} object. This default (i.e., no argument)
      * constructor is executed in Step 2 of the JavaFX Application Life-Cycle.
@@ -24,6 +25,10 @@ public class ApiApp extends Application {
     public ApiApp() {
         root = new VBox();
     } // ApiApp
+
+    private void searchDictionary() {
+        return;
+    }
 
     /** {@inheritDoc} */
     @Override
