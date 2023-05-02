@@ -1,0 +1,149 @@
+[33mcommit a0af65ec3506da228f0efd27f2071ae6e030ea7b[m[33m ([m[1;36mHEAD -> [m[1;32mvisuals[m[33m, [m[1;32mmain[m[33m)[m
+Author: Justin K Goldman <jkg95784@uga.edu>
+Date:   Mon May 1 13:56:25 2023 -0400
+
+    new file
+
+[33mcommit c7ade508ed01286e7755d36b5cec3a4a84218ef2[m[33m ([m[1;31mstarter/main[m[33m, [m[1;31morigin/main[m[33m, [m[1;32mcheckout[m[33m)[m
+Author: Michael Cotterell <mepcotterell@gmail.com>
+Date:   Fri Apr 28 23:38:32 2023 -0400
+
+    Update README.rst
+
+[33mcommit 0ad45286d5d8c836169d67517a16d0d785a6807b[m
+Author: Michael Cotterell <mepcotterell@gmail.com>
+Date:   Thu Apr 27 21:46:11 2023 -0400
+
+    Update README.rst
+
+[33mcommit de4dbee4c2bd7777a0d5ffe6db8a1352bc1e10a5[m
+Author: Michael Cotterell <mepcotterell@gmail.com>
+Date:   Thu Apr 27 21:45:23 2023 -0400
+
+    Added meta/DEADLINE.md file update to README
+
+[33mcommit a3ddd574b1ed2ec1449f950ce1aacff6d51553e6[m
+Author: Michael Cotterell <mepcotterell@gmail.com>
+Date:   Thu Apr 27 21:43:37 2023 -0400
+
+    Added meta/DEADLINE.md file
+
+[33mcommit 77843c1ea0501be575df28b3676c42df4917fe6f[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Sat Apr 22 15:06:02 2023 -0400
+
+    Update README.rst
+
+[33mcommit 8424dd7efa554f7af6ed0e93b941be89a0252dcb[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 17:26:32 2023 -0400
+
+    Update README.rst
+
+[33mcommit a9ee7df743c2eb1995e5427eab58e475b1fc3ddb[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 17:22:30 2023 -0400
+
+    Update README.rst
+
+[33mcommit dfc32e761f61fe38ca423afe224eb58052af57dd[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 17:16:49 2023 -0400
+
+    Update README.rst
+
+[33mcommit 34a2021c882d1db3dc16b1ef611f13b8851184e6[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 17:11:18 2023 -0400
+
+    Update README.rst
+
+[33mcommit 705f0c9d16df24f3e844fd24e9f17b8d8ab82fa3[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 17:03:55 2023 -0400
+
+    Update README.rst
+
+[33mcommit 02c495e6ef4bd7233a5d094be0eb0d76c227b103[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 13:56:55 2023 -0400
+
+    Update README.rst
+
+[33mcommit 866b08476575028f93cd46493ee5fea9f76b1fd7[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 13:54:16 2023 -0400
+
+    Update README.rst
+
+[33mcommit f24849037d2c8d992585a1cd4014f046e05799ac[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 13:53:39 2023 -0400
+
+    Update README.rst
+
+[33mcommit 664c38755f2fba2c67ede2e1571cc3e87bb94fb5[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 13:43:08 2023 -0400
+
+    Added appendices and merge script
+
+[33mcommit 5872fcd154fc1f05906b67776a98b9cd36bc6e4a[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 13:38:03 2023 -0400
+
+    Removed game text from README
+
+[33mcommit da7577be1dd968a4e0aeda2b65495e324972c4ae[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 13:15:49 2023 -0400
+
+    Update README.rst
+
+[33mcommit 1ac11e11aa8269537c634a3346d883ae2503ede9[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 13:13:46 2023 -0400
+
+    Updated README
+
+[33mcommit 3c2150eaa2cf2919cd878370365247ef336d0b14[m
+Author: Brad Barnes <bjb211@users.noreply.github.com>
+Date:   Fri Apr 21 13:12:22 2023 -0400
+
+    Update README.rst
+
+[33mcommit 6df7426cb76a5546afe7ecdb66fc5180cfb5603d[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 13:10:55 2023 -0400
+
+    Added images for readme
+
+[33mcommit 40befecf2fdbd011601f65543d3d6f589df01ec4[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 13:09:26 2023 -0400
+
+    Changed Omega to Api in the readme
+
+[33mcommit cebaf116903abb8129726a1015c213f3b3fbb5ca[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 13:07:25 2023 -0400
+
+    Cleaned up the starter code
+
+[33mcommit 9ed6b833cd638c96efbf2f0a94a0f784a9caeefe[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 12:59:17 2023 -0400
+
+    Cleaned up the starter code
+
+[33mcommit 823cf9fd7ad45d183e56f75cd039df2f13da9054[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Fri Apr 21 12:54:27 2023 -0400
+
+    Cleaned up the starter code
+
+[33mcommit 8b8eda494bed94a1725e711745b1a7f5f4c64027[m
+Author: Brad Barnes <bjb211@uga.edu>
+Date:   Wed Apr 12 15:09:02 2023 -0400
+
+    Initial Commit
