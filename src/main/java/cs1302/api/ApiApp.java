@@ -22,11 +22,14 @@ import javafx.concurrent.Task;
 
 import java.io.IOException;
 import java.lang.InterruptedException;
+import java.lang.IllegalStateException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
+import com.google.gson.JsonSyntaxException;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.lang.NullPointerException;
 
 
 
@@ -59,6 +62,8 @@ public class ApiApp extends Application {
     String uriString;
     DictionaryResponse dictResp;
 
+    Boolean errorThrown;
+
 
 
 
@@ -78,6 +83,8 @@ public class ApiApp extends Application {
         bottomBar = new HBox();
         searchButton = new Button();
         searchBar = new TextField();
+        definitionLabel = new Label();
+        errorThrown = false;
 
 
     } // ApiApp
@@ -112,10 +119,17 @@ public class ApiApp extends Application {
     private void updateDictionarySearch(String term) {
         Platform.runLater(() -> searchButton.setDisable(true));
         DictionaryResponse response = dictionaryAPIFetch(term);
-        String substringresponse = response.meanings[0].definitions[0].definition;
-        String newLabel = "Now showing definition for word: '" + term + "'";
-        Platform.runLater(() -> instructionsLabel.setText(newLabel));
-        Platform.runLater(() -> definitionLabel.setText(substringresponse));
+        if (response != null) {
+            String substringresponse = response.meanings[0].definitions[0].definition;
+            String newLabel = "Type in new word or translate existing definition.";
+            String newDefinition = "\n" + "First found definition of '" + term + "' :";
+            newDefinition += "\n" + "\n" + substringresponse;
+            final String newDefinition2 = newDefinition;
+            if (errorThrown == false) {
+                Platform.runLater(() -> instructionsLabel.setText(newLabel));
+                Platform.runLater(() -> definitionLabel.setText(newDefinition2));
+            }
+        }
         Platform.runLater(() -> searchButton.setDisable(false));
 
 
@@ -130,6 +144,7 @@ public class ApiApp extends Application {
 
     private DictionaryResponse dictionaryAPIFetch(String term) {
         try {
+            errorThrown = false;
             uriString = "https://api.dictionaryapi.dev/api/v2/entries/en/";
             uriString += term;
             HttpRequest request = HttpRequest.newBuilder()
@@ -139,23 +154,38 @@ public class ApiApp extends Application {
                 .send(request, HttpResponse.BodyHandlers.ofString());
             String substringresponse = response.body().substring(1, response.body().length() - 1);
             dictResp = GSON.fromJson(substringresponse, DictionaryResponse.class);
-            System.out.println(dictResp.meanings[0].definitions[0].definition);
-
+        } catch (NullPointerException npe) {
+            String errorString = uriString + "\n" + "\n" + "\n";
+            String NPEString = errorString += "Exception : " + "\n" + npe.getMessage();
+            final String NPEString2 = NPEString;
+            Platform.runLater(() -> showError(NPEString2));
+            errorThrown = true;
         } catch (IOException IO) {
             String errorString = uriString + "\n" + "\n" + "\n";
             String IOstring = errorString += "Exception: " + IO.getMessage();
             final String IOString2 = IOstring;
             Platform.runLater(() -> showError(IOString2));
+            errorThrown = true;
         } catch (InterruptedException IE) {
             String errorString = uriString + "\n" + "\n" + "\n";
             String IEString = errorString += "Exception: " + IE.getMessage();
             final String IEString2 = IEString;
             Platform.runLater(() -> showError(IEString2));
+            errorThrown = true;
         } catch (IllegalStateException ISE) {
             String errorString = uriString + "\n" + "\n" + "\n";
             String ISEstring = errorString += "Exception :" + ISE.getMessage();
             final String ISEString2 = ISEstring;
             Platform.runLater(() -> showError(ISEString2));
+            errorThrown = true;
+        } catch (JsonSyntaxException jse) {
+            String errorString = uriString + "\n" + "\n" + "\n";
+            String JSEstring = errorString += "Exception : " + "\n" + jse.getMessage();
+            JSEstring +=  "\n" + "\n" + "\n";
+            JSEstring += "Probably caused by a search that yielded no results.";
+            final String JSEString2 = JSEstring;
+            Platform.runLater(() -> showError(JSEString2));
+            errorThrown = true;
         }
         return dictResp;
     }
@@ -196,7 +226,8 @@ public class ApiApp extends Application {
         instructions.getChildren().add(instructionsLabel);
 
         //a little with the definition / term bar
-
+        definitionLabel.setWrapText(true);
+        definitionBar.getChildren().add(definitionLabel);
 
         // setup stage
         stage.setTitle("ApiApp!");
