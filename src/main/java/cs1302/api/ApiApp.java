@@ -25,6 +25,10 @@ import java.lang.InterruptedException;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+
 
 /**
  * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
@@ -42,15 +46,18 @@ public class ApiApp extends Application {
     VBox root;
     HBox topBox;
     HBox instructions;
-    HBox term;
-    HBox definition;
-    HBox spanish;
-    HBox french;
+    HBox termBar;
+    HBox definitionBar;
+    HBox spanishBar;
+    HBox frenchBar;
     HBox bottomBar;
     Button searchButton;
     TextField searchBar;
+    Label instructionsLabel;
+    Label definitionLabel;
 
     String uriString;
+    DictionaryResponse dictResp;
 
 
 
@@ -64,13 +71,14 @@ public class ApiApp extends Application {
         root.setPrefHeight(500);
         topBox = new HBox();
         instructions = new HBox();
-        term = new HBox();
-        definition = new HBox();
-        spanish = new HBox();
-        french = new HBox();
+        termBar = new HBox();
+        definitionBar = new HBox();
+        spanishBar = new HBox();
+        frenchBar = new HBox();
         bottomBar = new HBox();
         searchButton = new Button();
         searchBar = new TextField();
+
 
     } // ApiApp
 
@@ -96,6 +104,23 @@ public class ApiApp extends Application {
 
     }
 
+/**
+   Private method to update the GUI for the  definition search.
+   @param term to update the search with
+*/
+
+    private void updateDictionarySearch(String term) {
+        Platform.runLater(() -> searchButton.setDisable(true));
+        DictionaryResponse response = dictionaryAPIFetch(term);
+        String substringresponse = response.meanings[0].definitions[0].definition;
+        String newLabel = "Now showing definition for word: '" + term + "'";
+        Platform.runLater(() -> instructionsLabel.setText(newLabel));
+        Platform.runLater(() -> definitionLabel.setText(substringresponse));
+        Platform.runLater(() -> searchButton.setDisable(false));
+
+
+    }
+
 
 /**
    Goes to the disctionary and fetches a given term.
@@ -103,9 +128,8 @@ public class ApiApp extends Application {
    @return a class that has the response from the dictionar
 */
 
-    private dictionaryResponse dictionaryAPIFetch(String term) {
+    private DictionaryResponse dictionaryAPIFetch(String term) {
         try {
-            searchButton.setDisable(true);
             uriString = "https://api.dictionaryapi.dev/api/v2/entries/en/";
             uriString += term;
             HttpRequest request = HttpRequest.newBuilder()
@@ -113,9 +137,9 @@ public class ApiApp extends Application {
                 .build();
             HttpResponse<String> response = HttpClient.newHttpClient()
                 .send(request, HttpResponse.BodyHandlers.ofString());
-
-            dictionaryResponse dictResp = GSON.fromJson(response.body(), dictionaryResponse.class);
-            return dictResp;
+            String substringresponse = response.body().substring(1, response.body().length() - 1);
+            dictResp = GSON.fromJson(substringresponse, DictionaryResponse.class);
+            System.out.println(dictResp.meanings[0].definitions[0].definition);
 
         } catch (IOException IO) {
             String errorString = uriString + "\n" + "\n" + "\n";
@@ -133,7 +157,7 @@ public class ApiApp extends Application {
             final String ISEString2 = ISEstring;
             Platform.runLater(() -> showError(ISEString2));
         }
-
+        return dictResp;
     }
 
 
@@ -153,23 +177,26 @@ public class ApiApp extends Application {
         Label notice = new Label("Modify the starter code to suit your needs.");
 
         // setup scene
-        root.getChildren().addAll(topBox, instructions, term, definition, spanish, french);
-        root.getChildren().add(bottomBar);
+        root.getChildren().addAll(topBox, instructions, termBar, definitionBar, spanishBar);
+        root.getChildren().addAll(frenchBar, bottomBar);
         scene = new Scene(root);
 
         //setup top bar
         Label termLabel = new Label("Term:");
         Button searchButton = new Button("Search");
         Runnable task = () -> {
-            dictionaryAPIFetch(searchBar.getText());
+            updateDictionarySearch(searchBar.getText());
         };
         searchButton.setOnAction(event -> runInNewThread(task));
         topBox.setSpacing(50);
         topBox.getChildren().addAll(termLabel, searchBar, searchButton);
 
         //setup instructions bar
-        Label instructionsLabel = new Label("Type your term into the box and press search.");
+        instructionsLabel = new Label("Type your term into the box and press search.");
         instructions.getChildren().add(instructionsLabel);
+
+        //a little with the definition / term bar
+
 
         // setup stage
         stage.setTitle("ApiApp!");
