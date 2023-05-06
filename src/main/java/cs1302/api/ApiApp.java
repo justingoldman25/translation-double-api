@@ -19,6 +19,8 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import javafx.concurrent.Task;
+import javafx.scene.control.ComboBox;
+import java.nio.charset.StandardCharsets;
 
 import java.io.IOException;
 import java.lang.InterruptedException;
@@ -34,7 +36,9 @@ import java.lang.NullPointerException;
 
 
 /**
- * REPLACE WITH NON-SHOUTING DESCRIPTION OF YOUR APP.
+ * My app is used in order to take a word and find the definition of it. Once
+ you have the definition, you then are given the choice to translate the definition into one
+ of five different languages.
  */
 public class ApiApp extends Application {
 
@@ -51,18 +55,24 @@ public class ApiApp extends Application {
     HBox instructions;
     HBox termBar;
     HBox definitionBar;
-    HBox spanishBar;
-    HBox frenchBar;
-    HBox bottomBar;
+    HBox translateOptionBar;
+    HBox translateBar;
     Button searchButton;
     TextField searchBar;
     Label instructionsLabel;
     Label definitionLabel;
+    Label translateOptionLabel;
+    ComboBox translationOptionComboBox;
+    Button translationGoButton;
+    Label translateBarLabel;
 
     String uriString;
     DictionaryResponse dictResp;
+    TranslationResponse transResp;
+    String translatedDefinition;
 
     Boolean errorThrown;
+    Boolean runOnce;
 
 
 
@@ -78,13 +88,17 @@ public class ApiApp extends Application {
         instructions = new HBox();
         termBar = new HBox();
         definitionBar = new HBox();
-        spanishBar = new HBox();
-        frenchBar = new HBox();
-        bottomBar = new HBox();
+        translateOptionBar = new HBox();
+        translateBar = new HBox();
         searchButton = new Button();
         searchBar = new TextField();
         definitionLabel = new Label();
+        translateOptionLabel = new Label();
+        translationOptionComboBox = new ComboBox();
+        translationGoButton = new Button();
         errorThrown = false;
+        runOnce = false;
+        translateBarLabel = new Label();
 
 
     } // ApiApp
@@ -111,6 +125,117 @@ public class ApiApp extends Application {
 
     }
 
+
+/**
+   Private method to create the second part of the JavaFX.
+   Only called once a term has been successfully defined.
+   @param term - the term that we are going to translate
+   @param definition - the definition th
+*/
+
+    private void createTranslate(String term, String definition) {
+        translateOptionLabel.setText("Translate?");
+        translationOptionComboBox.getItems().addAll("French", "Spanish", "English", "German");
+        translationOptionComboBox.getItems().addAll("Chinese", "Japanese");
+        translationOptionComboBox.setValue("Spanish");
+        translationGoButton.setText("Search");
+        Runnable translator = () -> {
+            translationAPI(definition);
+        };
+
+        translationGoButton.setOnAction(event -> runInNewThread(translator));
+        Platform.runLater(() -> translateOptionBar.getChildren().add(translateOptionLabel));
+        Platform.runLater(() -> translateOptionBar.getChildren().add(translationOptionComboBox));
+        Platform.runLater(() -> translateOptionBar.getChildren().add(translationGoButton));
+    }
+/**
+   gets language code.
+   @param language language string
+   @return the code
+*/
+
+    private String getLanguageCode(String language) {
+        String languageCode = "";
+        if (language == "French") {
+            languageCode = "fr";
+        }
+        if (language == "Spanish") {
+            languageCode = "es";
+        }
+        if (language == "English") {
+            languageCode = "en";
+        }
+        if (language == "German") {
+            languageCode = "de";
+        }
+        if (language == "Chinese") {
+            languageCode = "zh";
+        }
+        if (language == "Japanese") {
+            languageCode = "ja";
+        }
+        return languageCode;
+    }
+/**
+   A private method to contact the translationAPI.
+   @param translation - what is going to be translated
+*/
+
+    private void translationAPI(String translation) {
+        String language = (String) translationOptionComboBox.getValue();
+        String languageCode = getLanguageCode(language);
+        searchButton.setDisable(true);
+        String encodedTranslation = URLEncoder.encode(translation, StandardCharsets.UTF_8);
+        String link = "q=" + encodedTranslation + "&target=";
+        link += languageCode + "&source=en";
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://google-translate1.p.rapidapi.com/language/translate/v2"))
+                .header("content-type", "application/x-www-form-urlencoded")
+                .header("Accept-Encoding", "application/gzip")
+                .header("X-RapidAPI-Key", "0af5a7277bmshb144461f87e0558p1ea5b3jsn820997b642b5")
+                .header("X-RapidAPI-Host", "google-translate1.p.rapidapi.com")
+                .method("POST", HttpRequest.BodyPublishers.ofString(link))
+                .build();
+            HttpResponse<String> response = HttpClient
+                .newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
+            transResp = GSON.fromJson(response.body(), TranslationResponse.class);
+            String translatedDef = transResp.data.translations[0].translatedText;
+            translatedDefinition = translatedDef;
+            String holder = "Translation: " + "\n" + translatedDefinition;
+            Platform.runLater(() -> translateBarLabel.setText(holder));
+            Platform.runLater(() -> translateBarLabel.setWrapText(true));
+            if (runOnce == false) {
+                Platform.runLater(() -> translateBar.getChildren().add(translateBarLabel));
+            }
+        } catch (IOException IO) {
+            String errorString = uriString + "\n" + "\n" + "\n";
+            String IOstring = errorString += "Exception: " + IO.getMessage();
+            final String IOString2 = IOstring;
+            Platform.runLater(() -> showError(IOString2));
+        } catch (InterruptedException IE) {
+            String errorString = uriString + "\n" + "\n" + "\n";
+            String IEString = errorString += "Exception: " + IE.getMessage();
+            final String IEString2 = IEString;
+            Platform.runLater(() -> showError(IEString2));
+        } catch (IllegalStateException ISE) {
+            String errorString = uriString + "\n" + "\n" + "\n";
+            String ISEstring = errorString += "Exception :" + ISE.getMessage();
+            final String ISEString2 = ISEstring;
+            Platform.runLater(() -> showError(ISEString2));
+        } catch (NullPointerException NPE) {
+            String errorString = uriString + "\n" + "\n" + "\n";
+            String NPEstring = errorString += "Exception :" + NPE.getMessage() + "\n";
+            NPEstring += "Sorry, our translation API could not translate your definition.";
+            final String NPEString2 = NPEstring;
+            Platform.runLater(() -> showError(NPEString2));
+        }
+
+        searchButton.setDisable(false);
+        translationGoButton.setDisable(true);
+    }
+
+
 /**
    Private method to update the GUI for the  definition search.
    @param term to update the search with
@@ -122,12 +247,24 @@ public class ApiApp extends Application {
         if (response != null) {
             String substringresponse = response.meanings[0].definitions[0].definition;
             String newLabel = "Type in new word or translate existing definition.";
+            newLabel += " You will only be able to make one translation";
+            newLabel += " unless you search another term.";
+            final String newLabel2 = newLabel;
             String newDefinition = "\n" + "First found definition of '" + term + "' :";
             newDefinition += "\n" + "\n" + substringresponse;
             final String newDefinition2 = newDefinition;
             if (errorThrown == false) {
-                Platform.runLater(() -> instructionsLabel.setText(newLabel));
+                Platform.runLater(() -> instructionsLabel.setText(newLabel2));
+                Platform.runLater(() -> instructionsLabel.setWrapText(true));
                 Platform.runLater(() -> definitionLabel.setText(newDefinition2));
+                if (runOnce == false) {
+                    createTranslate(term, substringresponse);
+                }
+                Runnable translator = () -> {
+                    translationAPI(substringresponse);
+                };
+                translationGoButton.setOnAction(event -> runInNewThread(translator));
+                runOnce = true;
             }
         }
         Platform.runLater(() -> searchButton.setDisable(false));
@@ -143,6 +280,7 @@ public class ApiApp extends Application {
 */
 
     private DictionaryResponse dictionaryAPIFetch(String term) {
+        translationGoButton.setDisable(false);
         try {
             errorThrown = false;
             uriString = "https://api.dictionaryapi.dev/api/v2/entries/en/";
@@ -207,8 +345,9 @@ public class ApiApp extends Application {
         Label notice = new Label("Modify the starter code to suit your needs.");
 
         // setup scene
-        root.getChildren().addAll(topBox, instructions, termBar, definitionBar, spanishBar);
-        root.getChildren().addAll(frenchBar, bottomBar);
+        root.setSpacing(15);
+        root.getChildren().addAll(topBox, instructions, termBar, definitionBar, translateOptionBar);
+        root.getChildren().add(translateBar);
         scene = new Scene(root);
 
         //setup top bar
@@ -219,7 +358,9 @@ public class ApiApp extends Application {
         };
         searchButton.setOnAction(event -> runInNewThread(task));
         topBox.setSpacing(50);
+        translateOptionBar.setSpacing(50);
         topBox.getChildren().addAll(termLabel, searchBar, searchButton);
+        translateBar.getChildren().add(translateBarLabel);
 
         //setup instructions bar
         instructionsLabel = new Label("Type your term into the box and press search.");
