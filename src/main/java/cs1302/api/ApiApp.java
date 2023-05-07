@@ -135,7 +135,7 @@ public class ApiApp extends Application {
 
     private void createTranslate(String term, String definition) {
         translateOptionLabel.setText("Translate?");
-        translationOptionComboBox.getItems().addAll("French", "Spanish", "English", "German");
+        translationOptionComboBox.getItems().addAll("French", "Spanish", "German");
         translationOptionComboBox.getItems().addAll("Chinese", "Japanese");
         translationOptionComboBox.setValue("Spanish");
         translationGoButton.setText("Search");
@@ -161,9 +161,6 @@ public class ApiApp extends Application {
         }
         if (language == "Spanish") {
             languageCode = "es";
-        }
-        if (language == "English") {
-            languageCode = "en";
         }
         if (language == "German") {
             languageCode = "de";
@@ -193,7 +190,7 @@ public class ApiApp extends Application {
                 .uri(URI.create("https://google-translate1.p.rapidapi.com/language/translate/v2"))
                 .header("content-type", "application/x-www-form-urlencoded")
                 .header("Accept-Encoding", "application/gzip")
-                .header("X-RapidAPI-Key", "0af5a7277bmshb144461f87e0558p1ea5b3jsn820997b642b5")
+                .header("X-RapidAPI-Key", "30ffe388edmsh061050f09b8e98ep111bf4jsnbccf344b952b")
                 .header("X-RapidAPI-Host", "google-translate1.p.rapidapi.com")
                 .method("POST", HttpRequest.BodyPublishers.ofString(link))
                 .build();
@@ -324,6 +321,9 @@ public class ApiApp extends Application {
             final String JSEString2 = JSEstring;
             Platform.runLater(() -> showError(JSEString2));
             errorThrown = true;
+        } catch (IllegalArgumentException IAE) {
+            String errorString = "Your term to search in a dictionary can only be one word.";
+            Platform.runLater(() -> showError(errorString));
         }
         return dictResp;
     }
